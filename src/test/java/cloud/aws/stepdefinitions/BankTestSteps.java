@@ -28,7 +28,7 @@ public class BankTestSteps {
     Test to assert the feature to create a new account.
     */
     @When("The user selects {string}")
-    public void the_user_selects(String string) {
+    public void the_user_selects() {
         AccountService.createAccount(1, 0);
     }
 
@@ -54,7 +54,6 @@ public class BankTestSteps {
     @Then("The user deposits 1000")
     public void the_user_deposits() {
         AccountService.addMoneyToAccount(1000, 0);
-
     }
 
     @Then("The balance on the account should be 1000")
@@ -83,6 +82,46 @@ public class BankTestSteps {
     public void there_should_be_less_on_the_account() {
         float balanceBefore = the_user_withdraws();
         Assertions.assertEquals(AccountService.accountList.getFirst().getAccountBalance(), balanceBefore - 1000);
+
+    }
+
+    /*
+    Test to assert the feature to transfer precious money between Fluffy Cloud Bank Accounts™️.
+    */
+
+    @Given("The application is running and the accountlist has at least two accounts")
+    public void the_application_is_running_and_the_accountlist_has_at_least_two_accounts() {
+        // Handled in setup.
+    }
+
+    @When("The user selects the option to transfer")
+    public void the_user_selects_the_option_to_transfer() {
+        // Handled inside the application
+
+    }
+
+    @Then("User is given a list of available accounts and chooses one to transfer the money from")
+    public void user_is_given_a_list_of_available_accounts_and_chooses_one_to_transfer_the_money_from() {
+        AccountService.viewAccounts();
+
+
+    }
+
+    @Then("User is given a list of available accounts and chooses one to transfer money to")
+    public void user_is_given_a_list_of_available_accounts_and_chooses_one_to_transfer_money_to() {
+        // Write code here that turns the phrase above into concrete actions
+
+    }
+
+    @Then("User is asked how much money they would like to transfer")
+    public void user_is_asked_how_much_money_they_would_like_to_transfer() {
+        // Write code here that turns the phrase above into concrete actions
+
+    }
+
+    @Then("The money is transferred")
+    public void the_money_is_transferred() {
+        // Write code here that turns the phrase above into concrete actions
 
     }
 

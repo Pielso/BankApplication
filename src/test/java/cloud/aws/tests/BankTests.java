@@ -18,10 +18,8 @@ public class BankTests {
     /// Had to go on an information safari on the www to find why the h*ll my testDepositMoney worked when run by itself,
     /// but not when running all tests together.
     ///
-    ///
     /// Immediately after the deposit the balance on the account (index 0) was zero, even though the deposit was made.
     /// So I couldn't understand why it was reset, or rejected.
-    ///
     ///
     /// It works now as it is, but at last I figured out why. I saw that at the time of
     /// running testDepositMoney the size of the accountList was 7. So that meant that the test was running last in order.

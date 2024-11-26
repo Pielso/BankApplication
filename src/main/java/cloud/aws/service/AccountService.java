@@ -39,7 +39,7 @@ public interface AccountService {
                     break;
                 } // Withdraw
                 case 3:{
-                    System.out.println("Transfer");
+                    transferOptionChosen();
                     break;
                 } // Transfer
                 case 4:{
@@ -121,13 +121,13 @@ public interface AccountService {
 
     }
 
-    // Extracted due to testing, since "depositOptionChosen" relies on user input.
+    // Extracted due to testing, since "depositOptionChosen" relies on user input. Part of depositOptionChosen and transferOptionChosen
     static void addMoneyToAccount(float depositSum, int listIndexOfAccount){
         float balance = accountList.get(listIndexOfAccount).getAccountBalance();
         accountList.get(listIndexOfAccount).setAccountBalance(balance + depositSum);
     }
 
-    // Extracted due to testing, since "withdrawOptionChosen" relies on user input.
+    // Extracted due to testing, since "withdrawOptionChosen" relies on user input. Part of withdrawOptionChosen and TransferOptionChosen.
     static void subtractMoneyFromAccount(float withdrawalSum, int listIndexOfAccount){
         float balance = accountList.get(listIndexOfAccount).getAccountBalance();
         accountList.get(listIndexOfAccount).setAccountBalance(balance - withdrawalSum);
@@ -135,20 +135,24 @@ public interface AccountService {
 
     // Shows a list
     static void viewAccounts(){
-        int counter = 1;
-        for (Account account: accountList){
-            String identifier = (account instanceof SavingsAccount) ? "Savings Account" : "Credit Account";
-            System.out.println("🪙 Account " + counter + ": is a " + identifier + " and has a balance of: " + account.getAccountBalance());
-            counter++;
+        if (accountList.isEmpty()){
+            accountListIsEmpty();
+        }
+        else {
+            int counter = 1;
+            for (Account account: accountList){
+                int accountNumber = account.getAccountNumber();
+                String identifier = (account instanceof SavingsAccount) ? "Savings Account" : "Credit Account";
+                System.out.println("🪙 ["+ counter +"] - ACCOUNT NUMBER: " + accountNumber + " - " + identifier + " - Has a balance of: " + account.getAccountBalance());
+                counter++;
+            }
         }
     }
 
     // Checks that accountList is not empty, asks how much to deposit, shows the user a list of the accounts, and user chooses which account to deposit money into.
     static void depositOptionChosen(){
         if (accountList.isEmpty()){
-            System.out.println("""
-            \tYou don't have a Fluffy Cloud Account™️
-            \tEither start one or escort yourself out of the building.""");
+            accountListIsEmpty();
         }
         else {
             System.out.println("How much money do you want to deposit?");
@@ -167,9 +171,7 @@ public interface AccountService {
     // Checks that accountList is not empty, asks how much to withdraw, shows the user a list of the accounts, and user chooses which account to withdraw money from.
     static void withdrawOptionChosen(){
         if (accountList.isEmpty()){
-            System.out.println("""
-            You don't have a Fluffy Cloud Account™️
-            Either start one or escort yourself out of the building.""");
+            accountListIsEmpty();
         }
         else {
             System.out.println("How much money do you want to withdraw?");
@@ -182,6 +184,55 @@ public interface AccountService {
             System.out.println("\nHere is your " + withdrawalSum + " money! " +
             "\nThe best way to spend those are to deposit them into a Fluffy Cloud Bank Account™️");
         }
+    }
+
+    // Checks first that accountList is not empty, then that its size i above 1, and the lets the user choose accounts, then uses the subtractMoneyFromAccount and addMoneyToAccount to make the transfer.
+    static void transferOptionChosen(){
+        if (accountList.isEmpty()){
+            accountListIsEmpty();
+        }
+        else if (accountList.size() == 1)
+            System.out.println("""
+        You only have one Fluffy Cloud Bank Account™️ available.
+        A transfer is illogical. Please open a new account if you wish to use this service.
+        Live long and prosper! 🖖""");
+        else {
+            System.out.println("Of course dear customer. Which of your available accounts would you like to transfer the money from?");
+            viewAccounts();
+            Scanner scan = new Scanner(System.in);
+            int transferFrom = 0;
+            int transferTo = 0;
+            try {
+                transferFrom = scan.nextInt()-1;
+            } catch (RuntimeException e) {
+                System.out.println("Not a valid choice. Please contain you input to the extent of the list of accounts.");
+            }
+            System.out.println("And which of your accounts do you wish to transfer the money to?");
+            try {
+                transferTo = scan.nextInt()-1;
+            } catch (RuntimeException e) {
+                System.out.println("Not a valid choice. Please contain you input to the extent of the list of accounts.");
+            }
+            System.out.println("And how much precious money would you like to transfer?");
+            int transferAmount = scan.nextInt();
+            makeTransfer(transferAmount, transferFrom, transferTo);
+            viewAccounts();
+            System.out.println("Your transfer is complete. Here is your new balance.");
+        }
+
+    }
+
+    // Only prints out a message. Size check is done in each individual method, not in this. Part of depositOptionChosen, WithdrawOptionChosen, ViewAccounts
+    static void accountListIsEmpty(){
+        System.out.println("""
+            You don't have a Fluffy Cloud Account™️
+            Either start one or escort yourself out of the building.""");
+    }
+
+    // Subtracts the transferAmount from one account (transferFrom) and adds the transferAmount to another account (transferTo). Part of transferOptionChosen.
+    static void makeTransfer(int transferAmount, int transferFrom, int transferTo){
+        subtractMoneyFromAccount(transferAmount, transferFrom);
+        addMoneyToAccount(transferAmount, transferTo);
     }
 
 
