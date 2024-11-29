@@ -1,10 +1,6 @@
 package cloud.aws.tests;
-
 import cloud.aws.service.AccountService;
-import io.cucumber.java.Before;
 import org.junit.jupiter.api.*;
-
-import java.util.ArrayList;
 
 public class BankTests {
 
@@ -25,7 +21,7 @@ public class BankTests {
     /// running testDepositMoney the size of the accountList was 7. So that meant that the test was running last in order.
     /// That shouldn't matter, since I was checking balance at index 0.
     /// However. The second last test was the withdrawal, where I withdrew exactly 1000 from the account at index 0, so
-    /// the zero balance was not because of anything not working.
+    /// a deposit of +1000 on an account that has a balance of -1000 made the zero balance. It was not because of anything not working.
     ///
     /// This day I learned to test with different sums. If I had tested the withdrawal with another sum, say 123 instead,
     /// I would have saved me at least two hours of debug mania. #listOfFails.add();
@@ -41,7 +37,7 @@ public class BankTests {
 
         // Act
         AccountService.addMoneyToAccount(1000,0);
-        float checkBalance = AccountService.accountList.get(0).getAccountBalance();
+        float checkBalance = AccountService.accountList.getFirst().getAccountBalance();
 
         // Assert
         Assertions.assertEquals(1000, checkBalance, "Balance is off");
@@ -58,8 +54,6 @@ public class BankTests {
         Assertions.assertEquals(3, AccountService.accountList.size(), "The number of accounts in the accountlist was off");
     }
 
-
-
     @Test
     public void testWithdrawMoney(){
         // Arrange (done in setup)
@@ -71,5 +65,19 @@ public class BankTests {
         Assertions.assertEquals(-1000, AccountService.accountList.getFirst().getAccountBalance());
     }
 
+    @Test
+    public void testTransferMoney(){
+        // Arrange (done in setup)
+
+        // Act
+        int transferFrom = 0;
+        int transferTo = 1;
+        int transferAmount = 150;
+        AccountService.makeTransfer(transferAmount, transferFrom, transferTo);
+
+
+        // Assert
+        Assertions.assertEquals(300, AccountService.accountList.get(1).getAccountBalance() - AccountService.accountList.get(0).getAccountBalance(), "Balance was off");
+    }
 
 }

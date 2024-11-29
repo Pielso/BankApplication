@@ -47,7 +47,7 @@ public interface AccountService {
                     break;
                 } // New Account
                 case 5:{
-                    System.out.println("View");
+                    viewAccountsOptionChosen();
                     break;
                 } // View accounts
                 case 6:{
@@ -105,22 +105,6 @@ public interface AccountService {
         }
     }
 
-    // Asks user which of the two available accounts they'd like to start (Savings or Credit).
-    static void createNewAccountOptionChosen() {
-        System.out.println("\nWhich type of account do you want to open?");
-        System.out.println("1: Savings Account");
-        System.out.println("2: Credit Account");
-
-        Scanner scan = new Scanner(System.in);
-        int accountChoice = scan.nextInt();
-
-        int accountNumber = generateUniqueAccountNumber();
-
-        createAccount(accountChoice, accountNumber);
-
-
-    }
-
     // Extracted due to testing, since "depositOptionChosen" relies on user input. Part of depositOptionChosen and transferOptionChosen
     static void addMoneyToAccount(float depositSum, int listIndexOfAccount){
         float balance = accountList.get(listIndexOfAccount).getAccountBalance();
@@ -149,79 +133,6 @@ public interface AccountService {
         }
     }
 
-    // Checks that accountList is not empty, asks how much to deposit, shows the user a list of the accounts, and user chooses which account to deposit money into.
-    static void depositOptionChosen(){
-        if (accountList.isEmpty()){
-            accountListIsEmpty();
-        }
-        else {
-            System.out.println("How much money do you want to deposit?");
-            Scanner scanner = new Scanner(System.in);
-            float depositSum = scanner.nextFloat();
-            viewAccounts();
-            System.out.println("\nWhich account do you want to deposit all that money to?\n");
-            int listIndexOfAccount = scanner.nextInt()-1;
-            addMoneyToAccount(depositSum, listIndexOfAccount);
-            System.out.println("\nYour money is now safe in the clouds!");
-        }
-
-        System.out.println();
-    }
-
-    // Checks that accountList is not empty, asks how much to withdraw, shows the user a list of the accounts, and user chooses which account to withdraw money from.
-    static void withdrawOptionChosen(){
-        if (accountList.isEmpty()){
-            accountListIsEmpty();
-        }
-        else {
-            System.out.println("How much money do you want to withdraw?");
-            Scanner scanner = new Scanner(System.in);
-            float withdrawalSum = scanner.nextFloat();
-            viewAccounts();
-            System.out.println("\nWhich account do you want to withdraw all that money to?\n");
-            int listIndexOfAccount = scanner.nextInt()-1;
-            subtractMoneyFromAccount(withdrawalSum, listIndexOfAccount);
-            System.out.println("\nHere is your " + withdrawalSum + " money! " +
-            "\nThe best way to spend those are to deposit them into a Fluffy Cloud Bank Account™️");
-        }
-    }
-
-    // Checks first that accountList is not empty, then that its size i above 1, and the lets the user choose accounts, then uses the subtractMoneyFromAccount and addMoneyToAccount to make the transfer.
-    static void transferOptionChosen(){
-        if (accountList.isEmpty()){
-            accountListIsEmpty();
-        }
-        else if (accountList.size() == 1)
-            System.out.println("""
-        You only have one Fluffy Cloud Bank Account™️ available.
-        A transfer is illogical. Please open a new account if you wish to use this service.
-        Live long and prosper! 🖖""");
-        else {
-            System.out.println("Of course dear customer. Which of your available accounts would you like to transfer the money from?");
-            viewAccounts();
-            Scanner scan = new Scanner(System.in);
-            int transferFrom = 0;
-            int transferTo = 0;
-            try {
-                transferFrom = scan.nextInt()-1;
-            } catch (RuntimeException e) {
-                System.out.println("Not a valid choice. Please contain you input to the extent of the list of accounts.");
-            }
-            System.out.println("And which of your accounts do you wish to transfer the money to?");
-            try {
-                transferTo = scan.nextInt()-1;
-            } catch (RuntimeException e) {
-                System.out.println("Not a valid choice. Please contain you input to the extent of the list of accounts.");
-            }
-            System.out.println("And how much precious money would you like to transfer?");
-            int transferAmount = scan.nextInt();
-            makeTransfer(transferAmount, transferFrom, transferTo);
-            viewAccounts();
-            System.out.println("Your transfer is complete. Here is your new balance.");
-        }
-
-    }
-
     // Only prints out a message. Size check is done in each individual method, not in this. Part of depositOptionChosen, WithdrawOptionChosen, ViewAccounts
     static void accountListIsEmpty(){
         System.out.println("""
@@ -234,6 +145,107 @@ public interface AccountService {
         subtractMoneyFromAccount(transferAmount, transferFrom);
         addMoneyToAccount(transferAmount, transferTo);
     }
+
+        // Checks that accountList is not empty, asks how much to deposit, shows the user a list of the accounts, and user chooses which account to deposit money into.
+        static void depositOptionChosen(){
+            if (accountList.isEmpty()){
+                accountListIsEmpty();
+            }
+            else {
+                System.out.println("How much money do you want to deposit?");
+                Scanner scanner = new Scanner(System.in);
+                float depositSum = scanner.nextFloat();
+                viewAccounts();
+                System.out.println("\nWhich account do you want to deposit all that money to?\n");
+                int listIndexOfAccount = scanner.nextInt()-1;
+                addMoneyToAccount(depositSum, listIndexOfAccount);
+                System.out.println("\nYour money is now safe in the clouds!");
+            }
+
+            System.out.println();
+        }
+
+        // Checks that accountList is not empty, asks how much to withdraw, shows the user a list of the accounts, and user chooses which account to withdraw money from.
+        static void withdrawOptionChosen(){
+            if (accountList.isEmpty()){
+                accountListIsEmpty();
+            }
+            else {
+                System.out.println("How much money do you want to withdraw?");
+                Scanner scanner = new Scanner(System.in);
+                float withdrawalSum = scanner.nextFloat();
+                viewAccounts();
+                System.out.println("\nWhich account do you want to withdraw all that money to?\n");
+                int listIndexOfAccount = scanner.nextInt()-1;
+                subtractMoneyFromAccount(withdrawalSum, listIndexOfAccount);
+                System.out.println("\nHere is your " + withdrawalSum + " money! " +
+                "\nThe best way to spend those are to deposit them into a Fluffy Cloud Bank Account™️");
+            }
+        }
+
+        // Checks first that accountList is not empty, then that its size i above 1, and the lets the user choose accounts, then uses the subtractMoneyFromAccount and addMoneyToAccount to make the transfer.
+        static void transferOptionChosen(){
+            if (accountList.isEmpty()){
+                accountListIsEmpty();
+            }
+            else if (accountList.size() == 1)
+                System.out.println("""
+            You only have one Fluffy Cloud Bank Account™️ available.
+            A transfer is illogical. Please open a new account if you wish to use this service.
+            Live long and prosper! 🖖""");
+            else {
+                System.out.println("Of course dear customer. Which of your available accounts would you like to transfer the money from?");
+                viewAccounts();
+                Scanner scan = new Scanner(System.in);
+                int transferFrom = 0;
+                int transferTo = 0;
+                try {
+                    transferFrom = scan.nextInt()-1;
+                } catch (RuntimeException e) {
+                    System.out.println("Not a valid choice. Please contain you input to the extent of the list of accounts.");
+                }
+                System.out.println("And which of your accounts do you wish to transfer the money to?");
+                try {
+                    transferTo = scan.nextInt()-1;
+                } catch (RuntimeException e) {
+                    System.out.println("Not a valid choice. Please contain you input to the extent of the list of accounts.");
+                }
+                System.out.println("And how much precious money would you like to transfer?");
+                int transferAmount = scan.nextInt();
+                makeTransfer(transferAmount, transferFrom, transferTo);
+                viewAccounts();
+                System.out.println("Your transfer is complete. Here is your new balance.");
+            }
+
+        }
+
+        // Asks user which of the two available accounts they'd like to start (Savings or Credit).
+        static void createNewAccountOptionChosen() {
+            System.out.println("\nWhich type of account do you want to open?");
+            System.out.println("1: Savings Account");
+            System.out.println("2: Credit Account");
+
+            Scanner scan = new Scanner(System.in);
+            int accountChoice = scan.nextInt();
+
+            int accountNumber = generateUniqueAccountNumber();
+
+            createAccount(accountChoice, accountNumber);
+
+
+        }
+
+        static void viewAccountsOptionChosen(){
+            System.out.println("Here is a list of all your accounts and their details:\n");
+            viewAccounts();
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+
 
 
 }

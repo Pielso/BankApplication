@@ -19,15 +19,16 @@ public class BankTestSteps {
         AccountService.accountList.add(creditAccount);
     }
 
+    /*
+    Test to assert the feature to create a new account.
+    */
+
     @Given("The application is running")
     public void the_application_is_running() {
         // Is always true
     }
 
-    /*
-    Test to assert the feature to create a new account.
-    */
-    @When("The user selects {string}")
+    @When("The user selects to create an account")
     public void the_user_selects() {
         AccountService.createAccount(1, 0);
     }
@@ -91,38 +92,30 @@ public class BankTestSteps {
 
     @Given("The application is running and the accountlist has at least two accounts")
     public void the_application_is_running_and_the_accountlist_has_at_least_two_accounts() {
-        // Handled in setup.
+       setupTwoAccounts();
+       Assertions.assertTrue(AccountService.accountList.size() >= 2,"Size of accountlist was less than 2 (" + AccountService.accountList.size() + "), which makes a transfer not possible.");
+
     }
 
     @When("The user selects the option to transfer")
     public void the_user_selects_the_option_to_transfer() {
         // Handled inside the application
-
     }
 
-    @Then("User is given a list of available accounts and chooses one to transfer the money from")
-    public void user_is_given_a_list_of_available_accounts_and_chooses_one_to_transfer_the_money_from() {
-        AccountService.viewAccounts();
-
-
-    }
-
-    @Then("User is given a list of available accounts and chooses one to transfer money to")
-    public void user_is_given_a_list_of_available_accounts_and_chooses_one_to_transfer_money_to() {
-        // Write code here that turns the phrase above into concrete actions
-
-    }
-
-    @Then("User is asked how much money they would like to transfer")
-    public void user_is_asked_how_much_money_they_would_like_to_transfer() {
-        // Write code here that turns the phrase above into concrete actions
-
+    @Then("User chooses amount and accounts to transfer money between")
+    public void user_chooses_amount_and_accounts_to_transfer_money_between() {
+        // Handled inside the application
     }
 
     @Then("The money is transferred")
     public void the_money_is_transferred() {
-        // Write code here that turns the phrase above into concrete actions
-
+        AccountService.accountList.get(0).setAccountBalance(0);
+        AccountService.accountList.get(1).setAccountBalance(0);
+        int transferFrom = 0;
+        int transferTo = 1;
+        int transferAmount = 150;
+        AccountService.makeTransfer(transferAmount, transferFrom, transferTo);
+        Assertions.assertEquals(300, AccountService.accountList.get(1).getAccountBalance() - AccountService.accountList.get(0).getAccountBalance(), "Balance was off");
     }
 
 
