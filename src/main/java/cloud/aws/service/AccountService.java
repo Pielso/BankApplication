@@ -9,57 +9,59 @@ import java.util.*;
 public interface AccountService {
     ArrayList <Account> accountList = new ArrayList<>();
 
-    // Just prints out the menuText. Loop is in Main.
-    static void menuText(){
-        System.out.println("\nWelcome to Fluffy Cloud Banking™️");
-        System.out.println("- Your money is safe in the clouds!");
-        System.out.println("\nWhat can we help you with today?\n");
-        System.out.println("""
-                [1]: Deposit precious money
-                [2]: Withdraw money from one of your accounts *sad face*
-                [3]: Transfer money between accounts
-                [4]: Create a fresh brand-spanking-new account
-                [5]: View your account information**
-                [6]: Leave
-                
-                (**may be monetized through third-party-vendors)""");
-    }
+        // The only two methods called i Main.
 
-    // A switch case for the six options in menu (including exiting, by sending bool back to main).
-    static boolean handleUserChoice(int userChoice){
-        boolean exit = false;
-        try {
-            switch (userChoice){
-                case 1:{
-                    depositOptionChosen();
-                    break;
-                } // Deposit
-                case 2:{
-                    withdrawOptionChosen();
-                    break;
-                } // Withdraw
-                case 3:{
-                    transferOptionChosen();
-                    break;
-                } // Transfer
-                case 4:{
-                    createNewAccountOptionChosen();
-                    break;
-                } // New Account
-                case 5:{
-                    viewAccountsOptionChosen();
-                    break;
-                } // View accounts
-                case 6:{
-                    exit = true;
-                    System.out.println("Goodbye, trusted and beautiful customer. We sorely await you return. Please bring us more money at your next visit!");
-                } // Exit
-            }
-        } catch (InputMismatchException e) {
-            System.out.println("Please choose one of your six options, by typing the respective number and pressing enter at the terminal!");
+        // Just prints out the menuText. Loop is in Main.
+        static void menuText(){
+            System.out.println("\nWelcome to Fluffy Cloud Banking™️");
+            System.out.println("- Your money is safe in the clouds!");
+            System.out.println("\nWhat can we help you with today?\n");
+            System.out.println("""
+                    [1]: Deposit precious money
+                    [2]: Withdraw money from one of your accounts *sad face*
+                    [3]: Transfer money between accounts
+                    [4]: Create a fresh brand-spanking-new account
+                    [5]: View your account information**
+                    [6]: Leave
+                    
+                    (**may be monetized through third-party-vendors)""");
         }
-        return exit;
-    }
+
+        // A switch case for the six options in menu (including exiting, by sending bool back to main).
+        static boolean handleUserChoice(int userChoice){
+            boolean exit = false;
+            try {
+                switch (userChoice){
+                    case 1:{
+                        depositOptionChosen();
+                        break;
+                    } // Deposit
+                    case 2:{
+                        withdrawOptionChosen();
+                        break;
+                    } // Withdraw
+                    case 3:{
+                        transferOptionChosen();
+                        break;
+                    } // Transfer
+                    case 4:{
+                        createNewAccountOptionChosen();
+                        break;
+                    } // New Account
+                    case 5:{
+                        viewAccountsOptionChosen();
+                        break;
+                    } // View accounts
+                    case 6:{
+                        exit = true;
+                        System.out.println("Goodbye, trusted and beautiful customer. We sorely await you return. Please bring us more money at your next visit!");
+                    } // Exit
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Please choose one of your six options, by typing the respective number and pressing enter at the terminal!");
+            }
+            return exit;
+        }
 
     // Is part of the method "startNewAccount".
     static int generateUniqueAccountNumber(){
@@ -105,7 +107,7 @@ public interface AccountService {
         }
     }
 
-    // Extracted due to testing, since "depositOptionChosen" relies on user input. Part of depositOptionChosen and transferOptionChosen
+    // Extracted due to testing, since "depositOptionChosen" relies on user input. Part of depositOptionChosen and transferOptionChosen.
     static void addMoneyToAccount(float depositSum, int listIndexOfAccount){
         float balance = accountList.get(listIndexOfAccount).getAccountBalance();
         accountList.get(listIndexOfAccount).setAccountBalance(balance + depositSum);
@@ -117,7 +119,7 @@ public interface AccountService {
         accountList.get(listIndexOfAccount).setAccountBalance(balance - withdrawalSum);
     }
 
-    // Shows a list
+    // Shows a list of accounts. Used in all the ...OptionChosen methods, except create new account.
     static void viewAccounts(){
         if (accountList.isEmpty()){
             accountListIsEmpty();
@@ -145,6 +147,8 @@ public interface AccountService {
         subtractMoneyFromAccount(transferAmount, transferFrom);
         addMoneyToAccount(transferAmount, transferTo);
     }
+
+        // The 5 put-together methods used in the switch in Main (handleUserChoice).
 
         // Checks that accountList is not empty, asks how much to deposit, shows the user a list of the accounts, and user chooses which account to deposit money into.
         static void depositOptionChosen(){
@@ -235,6 +239,7 @@ public interface AccountService {
 
         }
 
+        // Shows the user the list of accounts.
         static void viewAccountsOptionChosen(){
             System.out.println("Here is a list of all your accounts and their details:\n");
             viewAccounts();
